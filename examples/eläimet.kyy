@@ -1,4 +1,4 @@
-eläimet = lista(["kissa", "karhu", "koira"])
+eläimet = ["kissa", "karhu", "koira"]
 
 jokaiselle sijainnille, eläimelle joka löytyy numeroiduista(eläimistä):
     jos sijainti > 1:

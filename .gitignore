@@ -1,6 +1,9 @@
 # We are not publishing the lock file!
 poetry.lock
 
+# Skipping parse products
+*.kyy.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

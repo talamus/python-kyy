@@ -4,7 +4,7 @@ KYY_TO_PYTHON = {
     ("joka_asemosana", "löytyä_teonsana",): "in",
     ("jos_sidesana",): "if",
     ("muuten_seikkasana",): "else",
-    ("lista",): "list",
+    ("numeroitu_laatusana",): "enumerate",
     ("numeroitu_laatusana_plural",): "enumerate",
 }
 

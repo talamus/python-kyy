@@ -1,5 +1,4 @@
-kuusi = 6
-numerot = lista([1, 2, 3])
+numerot = [1, 2, 3]
 
 jokaiselle numerolle joka löytyy numeroista:
     jos numero > 2:
