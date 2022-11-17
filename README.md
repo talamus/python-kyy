@@ -50,12 +50,12 @@ $ poetry update
 #### 3. Go and have fun!
 
 ```
-$ python -k kyy examples/eläimet.kyy
+$ python -m kyy examples/eläimet.kyy
 0 kissa
 1 karhu
 Tosi iso koira
 
-$ python -k kyy --help
+$ python -m kyy --help
 usage: python -m kyy [-h] [-o [program.py]] [-n] [-v] [program.kyy]
 
 A Finnish language variant of the Python programming language.
