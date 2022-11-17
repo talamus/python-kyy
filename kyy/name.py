@@ -16,7 +16,7 @@ class Name:
         self.original_token = token
         self.analyzis = VOIKKO.analyze(token.string)
 
-        # Reduce to basic forms
+        # Reduce to lemmas
         lemmas = set()
         only_lemma = None
         for word in self.analyzis:
@@ -40,8 +40,30 @@ class Name:
                 self.command = LEXICON[lemma]
                 break
 
-    def __str__(self):
+    def seek_lemma_from(self, list_of_lemmas: set[str]) -> str | None:
+        """Try to find self from a list of lemmas."""
+        intersection = self.lemmas.intersection(list_of_lemmas)
+        if len(intersection) == 1:
+            return intersection.pop()
+        else:
+            return None
+
+    def canonical_lemma(self) -> str:
+        """Try to guess the best lemma for this Name."""
         if self.only_lemma:
             return self.only_lemma
+        elif self.lemmas:
+            lemmas = list(self.lemmas)
+            lemmas.sort()
+            return lemmas[0]
         else:
+            return self.original_token.string
+
+    def __str__(self):
+        """A string representation of this Name."""
+        if self.only_lemma:
+            return self.only_lemma
+        elif self.lemmas:
             return str(self.lemmas)
+        else:
+            return self.original_token.string

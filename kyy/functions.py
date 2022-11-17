@@ -1,5 +1,5 @@
 from .__imports import *
-from .classes import Name
+from .name import Name
 
 
 def read_tokens(filename: str | None = None) -> list[tokenize.TokenInfo]:
@@ -38,10 +38,8 @@ def name_tokens_to_objects(
     new_tokens = list()
     for token in tokens:
         if token.type == tokenize.NAME:
-            name = Name(token)
-            new_tokens.append(name)
-        else:
-            new_tokens.append(token)
+            token = Name(token)
+        new_tokens.append(token)
     return new_tokens
 
 
@@ -62,6 +60,7 @@ def name_objects_to_strings(
             if token.command:
                 new_tokens.append(token.command["python"])
                 pos += len(token.command["kyy"])
+                # TODO: Check that rest of the command matches...
                 continue
 
             # Otherwise, we have a named entity
@@ -73,24 +72,18 @@ def name_objects_to_strings(
         pos += 1
     tokens = new_tokens
 
-    # Expand known entities, and make a smart guess with unkowns
+    # Expand known entities, and make smart guesses with unkowns
     new_tokens = list()
     for token in tokens:
         if isinstance(token, Name):
-            intersection = known_entities.intersection(token.lemmas)
 
             # Handle known entities:
-            if len(intersection) == 1:
-                token = intersection.pop()
+            if canonical_lemma := token.seek_lemma_from(known_entities):
+                token = canonical_lemma
 
-            # Otherwise, use alphabetically first lemma:
+            # Otherwise, make a guess:
             else:
-                sorted_list = list(token.lemmas)
-                sorted_list.sort()
-                if len(sorted_list) == 0:
-                    token = token.original_token.string
-                else:
-                    token = sorted_list[0]
+                token = token.canonical_lemma()
 
         new_tokens.append(token)
 
@@ -101,21 +94,27 @@ def tokens_to_program(tokens: list[tokenize.TokenInfo | str]) -> str:
     """Convert tokens to a Python program code."""
     indents = []
     program = []
+    indent = ""
     for token in tokens:
         if isinstance(token, tokenize.TokenInfo):
-            if token.type == tokenize.DEDENT:
-                indents.pop()
-                if len(indents):
-                    token = indents[-1]
-                else:
-                    token = ""
-            elif token.type == tokenize.INDENT:
+            if token.type == tokenize.INDENT:
                 indents.append(token.string)
-                token = token.string
+                indent = token.string
+                token = ""
+            elif token.type == tokenize.DEDENT:
+                indents.pop()
+                indent = indents[-1] if indents else ""
+                token = ""
             else:
                 token = token.string
-        if token != "\n" and token != "":
-            token += " "
-        program.append(token)
+
+        if token:
+            if token == "\n":
+                program.append("\n")
+                indent = indents[-1] if indents else ""
+            else:
+                program.append(indent + token + " ")
+                indent = ""
+
     program = "".join(program)
     return black.format_str(program, mode=black.Mode())  # type: ignore

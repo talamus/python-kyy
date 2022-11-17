@@ -1,0 +1,15 @@
+import random
+
+satunnaisluku = random.randint(1, 100)
+numero = tyhjä
+
+kunnes numero == satunnaisluku:
+    numero = kokonaisluku(kysy("Arvaa numero yhdestä sataan: "))
+
+    jos numero > satunnaisluku:
+        tulosta("Pienempi!")
+
+    jos numero < satunnaisluku:
+        tulosta("Suurempi!")
+
+tulosta(f"Arvasit oikein! Numero oli {numero}")
