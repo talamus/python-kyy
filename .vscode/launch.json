@@ -16,7 +16,7 @@
             "type": "python",
             "request": "launch",
             "module": "kyy",
-            "args": ["testi.kyy"],
+            "args": ["examples/testi.kyy"],
             "console": "integratedTerminal",
             "justMyCode": true
         }
