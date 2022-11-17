@@ -1,0 +1,7 @@
+eläimet = lista(["kissa", "karhu", "koira"])
+
+jokaiselle sijainnille, eläimelle joka löytyy numeroiduista(eläimistä):
+    jos sijainti > 1:
+        tulosta(f"Tosi iso {eläin}")
+    muuten:
+        tulosta(sijainti, eläin)
