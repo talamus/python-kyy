@@ -6,6 +6,7 @@ KYY_TO_PYTHON = {
     ("muuten_seikkasana",): "else",
     ("numeroitu_laatusana",): "enumerate",
     ("numeroitu_laatusana_plural",): "enumerate",
+    ("aliohjelma",): "def",
 }
 
 # Parse into a dictionary for easier referencing

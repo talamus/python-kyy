@@ -1,4 +1,3 @@
-from collections import defaultdict
 from .__imports import *
 from .classes import Name
 
@@ -32,9 +31,10 @@ def write_program(filename: str, program: str) -> None:
         ERROR(f"Unable to write program: {error}", errno)
 
 
-def parse_names(
+def parse_tokens_with_names(
     tokens: list[tokenize.TokenInfo],
-) -> list:
+) -> list[tokenize.TokenInfo | str]:
+    """Replace NAME tokens with corresponding strings."""
 
     # Parse all NAME tokens to Name objects
     new_tokens = list()
@@ -46,7 +46,8 @@ def parse_names(
             new_tokens.append(token)
     tokens = new_tokens
 
-    known_variables = set()
+    # Expand commands and build a list of known entities (variables, functions, ...)
+    known_entities = set()
     new_tokens = list()
     pos = 0
     while pos < len(tokens):
@@ -59,34 +60,38 @@ def parse_names(
                 pos += len(token.command["kyy"])
                 continue
 
-            # Otherwise, we have a variable (or other nameable entity)
+            # Otherwise, we have a named entity
             else:
                 if token.only_lemma:
-                    known_variables.add(token.only_lemma)
+                    known_entities.add(token.only_lemma)
 
         new_tokens.append(token)
         pos += 1
     tokens = new_tokens
 
+    # Expand known entities, and make a smart guess with unkowns
     new_tokens = list()
     for token in tokens:
         if isinstance(token, Name):
-            intersection = known_variables.intersection(token.lemmas)
+            intersection = known_entities.intersection(token.lemmas)
 
-            # Parse known variables:
+            # Handle known entities:
             if len(intersection) == 1:
                 token = intersection.pop()
 
-            # Otherwise, use the first lemma:
+            # Otherwise, use alphabetically first lemma:
             else:
-                token = token.lemmas.pop()
+                sorted_list = list(token.lemmas)
+                sorted_list.sort()
+                token = sorted_list[0]
 
         new_tokens.append(token)
 
     return new_tokens
 
 
-def untokenize(tokens) -> str:
+def tokens_to_program(tokens: list[tokenize.TokenInfo | str]) -> str:
+    """Convert tokens to a Python program code."""
     indents = []
     program = []
     for token in tokens:

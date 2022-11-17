@@ -1,12 +1,14 @@
 from .__imports import *
 
 class Name:
+    """Convert NAME token into a named entity."""
     original_token: tokenize.TokenInfo
     only_lemma: str | None
     lemmas: set[str]
     command: None | dict
 
     def __init__(self, token: tokenize.TokenInfo) -> None:
+        """Convert NAME token into a named entity."""
         if token.type != tokenize.NAME:
             raise TypeError("Token type has to be NAME", token)
         self.original_token = token
@@ -35,6 +37,3 @@ class Name:
             if lemma in LEXICON:
                 self.command = LEXICON[lemma]
                 break
-
-    def __str__(self) -> str:
-        return str(self.lemmas)

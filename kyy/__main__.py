@@ -48,20 +48,23 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    """Command line program."""
     args = parse_args()
     tokens = read_tokens(args.filename)
-    tokens = parse_names(tokens)
-    program = untokenize(tokens)
+    tokens = parse_tokens_with_names(tokens)
+    program = tokens_to_program(tokens)
 
     if args.output_python:
         if args.output_python == True:
-            args.output_python = "program.py"
             if args.filename:
                 args.output_python = args.filename + ".py"
+            else:
+                args.output_python = "program.py"
         write_program(args.output_python, program)
 
     if not args.no_exec:
         exec(program)
+
 
 if __name__ == "__main__":
     main()
