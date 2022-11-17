@@ -15,8 +15,8 @@ jokaiselle sijainnille, eläimelle joka löytyy numeroiduista(eläimistä):
         tulosta(sijainti, eläin)
 ```
 
-Translates into:
-```python
+Translates into Python program:
+```
 eläin_plural = ["kissa", "karhu", "koira"]
 
 for sijainti, eläin in enumerate(eläin_plural):
@@ -30,8 +30,8 @@ for sijainti, eläin in enumerate(eläin_plural):
 
 #### 1. Make sure that a Finnish language Voikko is installed
 
-```bash
-# sudo apt install libvoikko1 voikko-fi
+```
+$ sudo apt install libvoikko1 voikko-fi
 ```
 
 #### 2. Install Poetry according to package instructions
@@ -40,7 +40,7 @@ https://python-poetry.org/docs/#installation
 
 #### 3. Clone repository and initialize virtual environment
 
-```bash
+```
 $ git clone git@github.com:talamus/python-kyy.git
 $ cd python-kyy
 $ poetry shell
@@ -49,6 +49,24 @@ $ poetry update
 
 #### 3. Go and have fun!
 
-```bash
+```
 $ python -k kyy examples/eläimet.kyy
+0 kissa
+1 karhu
+Tosi iso koira
+
+$ python -k kyy --help
+usage: python -m kyy [-h] [-o [program.py]] [-n] [-v] [program.kyy]
+
+A Finnish language variant of the Python programming language.
+
+positional arguments:
+  program.kyy           the program file to be executed; defaults to stdin
+
+options:
+  -h, --help            show this help message and exit
+  -o [program.py], --output-python [program.py]
+                        output python source code
+  -n, --no-exec         don't execute the program
+  -v, --verbose         be more verbose
 ```
