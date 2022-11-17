@@ -31,12 +31,10 @@ def write_program(filename: str, program: str) -> None:
         ERROR(f"Unable to write program: {error}", errno)
 
 
-def parse_tokens_with_names(
+def name_tokens_to_objects(
     tokens: list[tokenize.TokenInfo],
-) -> list[tokenize.TokenInfo | str]:
-    """Replace NAME tokens with corresponding strings."""
-
-    # Parse all NAME tokens to Name objects
+) -> list[tokenize.TokenInfo | Name]:
+    """Replace NAME tokens with Name objects."""
     new_tokens = list()
     for token in tokens:
         if token.type == tokenize.NAME:
@@ -44,7 +42,13 @@ def parse_tokens_with_names(
             new_tokens.append(name)
         else:
             new_tokens.append(token)
-    tokens = new_tokens
+    return new_tokens
+
+
+def name_objects_to_strings(
+    tokens: list[tokenize.TokenInfo | Name],
+) -> list[tokenize.TokenInfo | str]:
+    """Replace Name objects with corresponding strings."""
 
     # Expand commands and build a list of known entities (variables, functions, ...)
     known_entities = set()
@@ -83,7 +87,10 @@ def parse_tokens_with_names(
             else:
                 sorted_list = list(token.lemmas)
                 sorted_list.sort()
-                token = sorted_list[0]
+                if len(sorted_list) == 0:
+                    token = token.original_token.string
+                else:
+                    token = sorted_list[0]
 
         new_tokens.append(token)
 

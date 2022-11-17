@@ -39,20 +39,60 @@ def parse_args() -> argparse.Namespace:
     )
     argparser.epilog = """example program:
 
-    aaaa
+  eläimet = ["kissa", "karhu", "koira"]
 
-    bbbbbb
-    \nfor more complete syntax, please refer the lexagon.py file\n"""
+  jokaiselle sijainnille, eläimelle joka löytyy numeroiduista(eläimistä):
+      jos sijainti > 1:
+          tulosta(f"Tosi iso {eläin}")
+      muuten:
+          tulosta(sijainti, eläin)
+    \nfor more complete syntax, please refer to the kyy/lexicon.py file\n"""
 
     return argparser.parse_args()
+
+
+def print_title(label, file=sys.stderr):
+    """A nice title"""
+    print(f"\n=== {label} {'=' * (40-len(label))} === == =\n", file=file)
+
+
+def print_tokens(tokens, file=sys.stderr):
+    """Pretty print for tokens"""
+    for token in tokens:
+        if isinstance(token, tokenize.TokenInfo):
+            string = tokenize.tok_name[token.type]
+            if token.string == "\n":
+                string += "\n"
+            elif token.string != "":
+                string += f'"{token.string}" '
+            else:
+                string += " "
+        else:
+            string = f'"{str(token)}" '
+
+        print(string, end="", file=file)
+    print(file=file)
 
 
 def main() -> None:
     """Command line program."""
     args = parse_args()
+
     tokens = read_tokens(args.filename)
-    tokens = parse_tokens_with_names(tokens)
+    if args.verbose:
+        print_title("Raw Kyy Tokens")
+        print_tokens(tokens)
+
+    tokens = name_tokens_to_objects(tokens)
+    if args.verbose:
+        print_title("Canonized Names")
+        print_tokens(tokens)
+
+    tokens = name_objects_to_strings(tokens)
     program = tokens_to_program(tokens)
+    if args.verbose:
+        print_title("Final Python Program")
+        print(program, file=sys.stderr)
 
     if args.output_python:
         if args.output_python == True:
@@ -63,6 +103,8 @@ def main() -> None:
         write_program(args.output_python, program)
 
     if not args.no_exec:
+        if args.verbose:
+            print_title("Program Output")
         exec(program)
 
 

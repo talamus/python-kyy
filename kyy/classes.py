@@ -1,7 +1,9 @@
 from .__imports import *
 
+
 class Name:
     """Convert NAME token into a named entity."""
+
     original_token: tokenize.TokenInfo
     only_lemma: str | None
     lemmas: set[str]
@@ -37,3 +39,9 @@ class Name:
             if lemma in LEXICON:
                 self.command = LEXICON[lemma]
                 break
+
+    def __str__(self):
+        if self.only_lemma:
+            return self.only_lemma
+        else:
+            return str(self.lemmas)
